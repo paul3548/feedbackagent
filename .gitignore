@@ -1,0 +1,23 @@
+.streamlit/secrets.toml
+.streamlit/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+.streamlit/
