@@ -12,6 +12,23 @@ class DFDAnalyzer:
         self.client = openai.OpenAI(api_key=api_key)
         
         # Customizable prompt components
+        
+        
+        self.task_description = """
+        You are analyzing a dataflow diagram submitted by a student as part of a systems analysis course.
+        The diagram should represent the system described below. Processes should correspond to computer systems or elements of computer systems
+        Your role is to provide educational feedback that helps students understand:
+        
+        - Proper DFD notation and symbols
+        - Correct representation of data flows, processes, data stores, and external entities
+        - Business logic and system boundaries
+        - Common modeling mistakes and how to avoid them
+        
+        Provide constructive, educational feedback that encourages learning while pointing out specific areas for improvement.
+        """
+        
+        
+        
         self.system_description = """
 The NHS electronic prescribing system handles the repeat prescriptions from review to dispensing. If, at a consultation, a patient and their GP agree that the patient should receive a repeat prescription with a prescribed drug, the GP will create a regimen for the prescription to be uploaded to the NHS Spine. This is a secure system and the GP will have to enter a PIN to access the system. The patient must nominate a pharmacy of their choice to receive the prescription. 
 When the patient goes to the pharmacy to collect their medication, the pharmacist downloads the prescription from the Spine. The pharmacist must ask the patient four questions (have seen a health professional since the last repeat, have you started any new treatment, have you had any problems, is there an item on your prescription you no longer need). The pharmacist can also contact the GP if they have any concerns or questions. If the checks are satisfied, the treatment is dispensed, the patient is given any additional advice that may be required and record stored on both the pharmacy system and the NHS Spine.
@@ -28,17 +45,20 @@ When the patient goes to the pharmacy to collect their medication, the pharmacis
         
         3. **Missing external entities**: Systems need to show where data originates and 
            where outputs go outside the system boundary.
-        
-        4. **Process naming**: Processes should use action verbs (e.g., "Validate Order", 
+
+        4. **Repeated entities**: External entities should not be duplicated;
+            each should appear only once in the diagram.
+                   
+        5. **Process naming**: Processes should use action verbs (e.g., "Validate Order", 
            "Calculate Total") not just nouns.
         
-        5. **Unbalanced flows**: Processes should have both inputs and outputs. 
+        6. **Unbalanced flows**: Processes should have both inputs and outputs. 
            A process can't just produce data from nothing.
         
-        6. **Data store access**: Data stores should be accessed (read from or written to) 
+        7. **Data store access**: Data stores should be accessed (read from or written to) 
            by processes, not directly by external entities.
         
-        7. **Incorrect symbols**: Check that circles/ovals are used for processes, 
+        8. **Incorrect symbols**: Check that circles/ovals are used for processes, 
            rectangles with rounded corners for external entities, and rectangles with sharp corners for data stores.
         """
         
@@ -71,6 +91,10 @@ When the patient goes to the pharmacy to collect their medication, the pharmacis
         for creating effective dataflow diagrams.
         """
     
+    def update_task_description(self, new_task: str):
+        """Update the generic task instructions."""
+        self.task_description = new_task
+
     def update_system_description(self, new_description: str):
         """Update the system description component."""
         self.system_description = new_description
@@ -84,8 +108,10 @@ When the patient goes to the pharmacy to collect their medication, the pharmacis
         self.feedback_guidance = new_guidance
     
     def compose_prompt(self) -> str:
-        """Compose the complete prompt from the three components."""
+        """Compose the complete prompt from the four components."""
         prompt = f"""
+{self.task_description}
+
 {self.system_description}
 
 {self.common_faults}
