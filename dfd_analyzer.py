@@ -13,15 +13,9 @@ class DFDAnalyzer:
         
         # Customizable prompt components
         self.system_description = """
-        You are analyzing a dataflow diagram (DFD) for a student learning exercise. 
-        The system being modeled is a typical business information system with the following characteristics:
-        - Processes that transform data (shown as circles or rounded rectangles)
-        - Data stores that hold information (shown as open rectangles or parallel lines)
-        - External entities that are sources or destinations of data (shown as squares)
-        - Data flows that show movement of information (shown as labeled arrows)
-        
-        The student should demonstrate understanding of how data moves through a system 
-        and transforms at each process step.
+The NHS electronic prescribing system handles the repeat prescriptions from review to dispensing. If, at a consultation, a patient and their GP agree that the patient should receive a repeat prescription with a prescribed drug, the GP will create a regimen for the prescription to be uploaded to the NHS Spine. This is a secure system and the GP will have to enter a PIN to access the system. The patient must nominate a pharmacy of their choice to receive the prescription. 
+When the patient goes to the pharmacy to collect their medication, the pharmacist downloads the prescription from the Spine. The pharmacist must ask the patient four questions (have seen a health professional since the last repeat, have you started any new treatment, have you had any problems, is there an item on your prescription you no longer need). The pharmacist can also contact the GP if they have any concerns or questions. If the checks are satisfied, the treatment is dispensed, the patient is given any additional advice that may be required and record stored on both the pharmacy system and the NHS Spine.
+
         """
         
         self.common_faults = """
@@ -45,7 +39,7 @@ class DFDAnalyzer:
            by processes, not directly by external entities.
         
         7. **Incorrect symbols**: Check that circles/ovals are used for processes, 
-           rectangles for external entities, and parallel lines or open rectangles for data stores.
+           rectangles with rounded corners for external entities, and rectangles with sharp corners for data stores.
         """
         
         self.feedback_guidance = """
@@ -117,7 +111,7 @@ Please analyze the uploaded dataflow diagram image and provide detailed, educati
         img_base64 = base64.b64encode(img_buffer.read()).decode('utf-8')
         return img_base64
     
-    async def analyze_dfd(self, image: Image.Image, model: str = "gpt-4o") -> Dict[str, Any]:
+    async def analyze_dfd(self, image: Image.Image, model: str = "gpt-5") -> Dict[str, Any]:
         """
         Analyze a DFD image using OpenAI's vision model.
         
@@ -156,8 +150,8 @@ Please analyze the uploaded dataflow diagram image and provide detailed, educati
                         ]
                     }
                 ],
-                max_tokens=1500,
-                temperature=0.1  # Low temperature for consistent analysis
+                max_completion_tokens=10000
+                
             )
             
             # Extract response
@@ -179,7 +173,7 @@ Please analyze the uploaded dataflow diagram image and provide detailed, educati
                 "feedback": "Analysis failed. Please try again."
             }
     
-    def analyze_dfd_sync(self, image: Image.Image, model: str = "gpt-4o") -> Dict[str, Any]:
+    def analyze_dfd_sync(self, image: Image.Image, model: str = "gpt-5") -> Dict[str, Any]:
         """
         Synchronous version of analyze_dfd for use in Streamlit.
         """
@@ -211,8 +205,8 @@ Please analyze the uploaded dataflow diagram image and provide detailed, educati
                         ]
                     }
                 ],
-                max_tokens=1500,
-                temperature=0.1
+                max_completion_tokens=10000
+                
             )
             
             # Extract response
@@ -298,7 +292,7 @@ def create_streamlit_interface():
             # Model selection
             model = st.selectbox(
                 "Choose OpenAI model:",
-                ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo"],
+                ["gpt-5", "gpt-4o", "gpt-4o-mini", "gpt-4-turbo"],
                 index=0
             )
             
