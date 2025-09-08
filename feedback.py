@@ -3,6 +3,7 @@ from dfd_analyzer import DFDAnalyzer  # Import the class
 from PIL import Image
 
 default_scenario = "The NHS electronic prescribing system handles the repeat prescriptions from review to dispensing. If, at a consultation, a patient and their GP agree that the patient should receive a repeat prescription with a prescribed drug, the GP will create a regimen for the prescription to be uploaded to the NHS Spine.This is a secure system and the GP will have to enter a PIN to access the system. The patient must nominate a pharmacy of their choice to receive the prescription.         When the patient goes to the pharmacy to collect their medication, the pharmacist downloads the prescription from the Spine. The pharmacist must ask the patient four questions (have you seen a health professional since the last repeat, have you started any new treatment, have you had any problems, is there an item on your prescription you no longer need). The pharmacist can also contact the GP if they have any concerns or questions. If the checks are satisfied, the treatment is dispensed, the patient is given any additional advice that may be required and record stored on both the pharmacy system and the NHS Spine."
+model = "gpt-4o-mini"
 
 st.title("📊 Dataflow Diagram Analyzer")
 
@@ -27,7 +28,7 @@ if uploaded_file is not None:
     
     if st.button("Analyze Diagram"):
         with st.spinner("Analyzing..."):
-            result = st.session_state.analyzer.analyze_dfd_sync(image)
+            result = st.session_state.analyzer.analyze_dfd_sync(image, model)
         
         if result["success"]:
             st.success("✅ Analysis Complete!")
