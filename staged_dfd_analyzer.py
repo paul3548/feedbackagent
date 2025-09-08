@@ -54,65 +54,56 @@ class SelectiveCacheDFDAnalyzer:
         
         # Stage 2: Error checking template
         self.stage2_prompt_template = """
-        Based on the detailed description of the DFD components provided, check for common DFD errors and violations.
+        Based on the description of the DFD components provided, check for DFD errors and violations.
         
         COMPONENT DESCRIPTION:
         {description}
-        
-        SYSTEM CONTEXT:
-        {system_description}
-        
+
         Check for these specific errors:
         
         **CRITICAL ERRORS**
         1. Direct datastore-to-datastore flows (data flowing between stores without a process)
         2. Processes with no inputs or no outputs
         3. External entities connected directly to data stores
-        4. Missing essential external entities for the system
+        4. Elements that do not belong in a DFD (e.g., control flows, UI elements)
         
         **LABELING ISSUES**
         1. Unlabeled data flows
-        2. Poor process naming (not action-oriented)
-        3. Unclear or missing data store names
-        
-        **STRUCTURAL PROBLEMS**
-        1. Unbalanced flows (what goes in vs what comes out)
-        2. Missing essential processes for the system
-        3. Incorrect data flow directions
-        
-        Provide specific feedback for each error found, explaining why it's problematic and how to fix it.
+        2. Labels on data flows that identify actions, processes or conditions
+        3. Unlabeled processes or data stores
+        4. Incorrect use of notation
+               
+        Do not check the diagram against the system description or comment on its accuracy or completeness.
+        Report and explain significant errors found. Be succinct.
         """
         
         # Stage 3: System modeling assessment template
         self.stage3_prompt_template = """
-        Based on the DFD description evaluate how well this diagram models the intended system.
+
+       Evaluate how well the dfd description models the system described in the text
         
         COMPONENT DESCRIPTION:
-        {description}       
-       
+        {description}   
+     
         SYSTEM REQUIREMENTS:
         {system_description}
         
         Assess the following:
         
         **SYSTEM COVERAGE**
-        - Does the diagram capture the main processes?
+        - Does the diagram capture the processes?
         - Are all necessary data flows represented?
-        - Are the system boundaries clear?
-        
+        - Are all stakeholders (external entities) identified?
+                
         **LOGIC**
         - Is the sequence of operations logical?
-        - Are all external entities identified?
-        
-        **COMPLETENESS**
-        - What processes or entities might be missing?
-        - Are there any unrealistic or unnecessary components?
-        
+        - Are the data flow directions correct?
+         
         **OVERALL ASSESSMENT**
         - Provide specific suggestions for improvement
         - Highlight what the student did well
         
-        Keep feedback constructive and educational.
+        Keep feedback constructive and succinct
         """
         
         # Default system description
